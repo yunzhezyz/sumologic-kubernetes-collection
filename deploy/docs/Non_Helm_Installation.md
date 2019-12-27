@@ -35,11 +35,15 @@ kubectl config use-context DESIRED_CONTEXT_NAME
 
 *Note the following steps are one way to install Helm, but in order to ensure property security, please be sure to review the [Helm documentation.](https://helm.sh/docs/using_helm/#securing-your-helm-installation)*
 
-Download Helm to generate the yaml files necessary to deploy by running
+Download latest Helm 2 to generate the yaml files necessary to deploy by running
 
 ```bash
-brew install kubernetes-helm
+curl -LJO https://get.helm.sh/helm-v2.16.1-linux-amd64.tar.gz
+tar -zxvf helm-v2.16.1-linux-amd64.tar.gz
+mv linux-amd64/helm /usr/local/bin/helm
 ```
+
+Reference: https://helm.sh/docs/intro/install/
 
 __NOTE__ These instructions assume that Prometheus is not already running on your Kubernetes cluster.
 
