@@ -9,6 +9,8 @@ spec:
   selector:
     matchLabels:
       app: {{ template "sumologic.labels.app" . }}
+  serviceName: {{ template "sumologic.fullname" . }}-headless
+  podManagementPolicy: "Parallel"
   replicas: {{ .Values.statefulset.replicaCount }}
   template:
     metadata:
@@ -16,7 +18,6 @@ spec:
         app: {{ template "sumologic.labels.app" . }}
         {{- include "sumologic.labels.common" . | nindent 8 }}
     spec:
-      podManagementPolicy: "Parallel"
       serviceAccountName: {{ template "sumologic.fullname" . }}
 {{- if .Values.statefulset.nodeSelector }}
       nodeSelector:
