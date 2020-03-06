@@ -29,7 +29,7 @@ In case the prometheus-operator is installed in a different namespace as compare
 For example: 
 If the sumologic solution is deployed in `<source-namespace>` and existing prometheus-operator is in `<destination-namespace>`, run the below command: 
 ```bash
-kubectl get configmap sumologic-configmap --namespace=<source-namespace> —-export -o yaml | \ kubectl apply --namespace=<destination-namespace> -f -
+kubectl get configmap sumologic-configmap --namespace=<source-namespace> —-export -o yaml | kubectl apply --namespace=<destination-namespace> -f -
 ```
 ##### 2. Update Prometheus remote write URL's
 Run the following to update the [remote write configuration](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#remote_write) of the prometheus operator by installing with the prometheus overrides file we provide below.
