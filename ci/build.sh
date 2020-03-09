@@ -6,6 +6,8 @@ VERSION="${VERSION#v}"
 : "${DOCKER_USERNAME:=sumodocker}"
 DOCKER_TAGS="https://registry.hub.docker.com/v1/repositories/sumologic/kubernetes-fluentd/tags"
 
+echo "Using Bash version: ${BASH_VERSION}"
+
 echo "Starting build process in: $(pwd) with version tag: $VERSION"
 err_report() {
     echo "Script error on line $1"
