@@ -193,6 +193,7 @@ sumologic:
       minReplicas: 3
       maxReplicas: 10
       targetCPUUtilizationPercentage: 50
+    workers: 1
 
   k8sMetadataFilter:
     ## Option to control the enabling of metadata filter plugin watch.
