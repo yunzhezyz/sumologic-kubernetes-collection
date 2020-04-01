@@ -2,14 +2,11 @@ image:
   repository: sumologic/kubernetes-fluentd
   tag: 1.0.0-beta.0
   pullPolicy: IfNotPresent
-
 nameOverride: ""
-
 sumologic:
-  ## Setup
-
   # If enabled, a pre-install hook will create Collector and Sources in Sumo Logic
   setupEnabled: true
+  ## Setup
 
   # If enabled, accessId and accessKey will be sourced from Secret Name given
   # Be sure to include at least the following env variables in your secret
@@ -25,13 +22,11 @@ sumologic:
   # Sumo API endpoint; Leave blank for automatic endpoint discovery and redirection
   # ref: https://help.sumologic.com/APIs/General-API-Information/Sumo-Logic-Endpoints-and-Firewall-Security
   endpoint: ""
-
   # Collector name
   #collectorName: ""
 
   # Cluster name
   clusterName: "kubernetes"
-
   setup:
     clusterRole:
       annotations:
@@ -58,7 +53,6 @@ sumologic:
         helm.sh/hook: pre-install,pre-upgrade
         helm.sh/hook-weight: "0"
         helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
-
   # Traces configuration
   # This is experimental feature and may be unavailable for your account
   traces:
@@ -70,7 +64,6 @@ sumologic:
     endpoint: ''
     # How many spans per request should be send to receiver
     spans_per_request: 100
-
 fluentd:
   statefulset:
     nodeSelector: {}
@@ -88,7 +81,6 @@ fluentd:
       requests:
         memory: 768Mi
         cpu: 0.5
-
   eventsStatefulset:
     nodeSelector: {}
     tolerations: {}
@@ -99,22 +91,18 @@ fluentd:
       requests:
         memory: 256Mi
         cpu: "100m"
-
   rawConfig: |-
     @include common.conf
     @include metrics.conf
     @include logs.conf
-
   ## Sets the fluentd log level. The default log level, if not specified, is info.
   ## Sumo will only ingest the error log level and some specific warnings, the info logs can be seen in kubectl logs.
   ## ref: https://docs.fluentd.org/deployment/logging
   logLevel: "info"
-
   ## Verify SumoLogic HTTPS certificates
   verifySsl: true
   ## Proxy URI for sumologic output plugin
   proxyUri: ""
-
   ## Option to turn autoscaling on for fluentd and specify params for HPA.
   ## Autoscaling needs metrics-server to access cpu metrics.
   autoscaling:
@@ -122,15 +110,12 @@ fluentd:
     minReplicas: 3
     maxReplicas: 10
     targetCPUUtilizationPercentage: 50
-
   securityContext:
     ## The group ID of all processes in the statefulset containers. By default this needs to be fluent(999).
     fsGroup: 999
-
   ## Persist data to a persistent volume; When enabled, fluentd uses the file buffer instead of memory buffer.
   persistence:
     enabled: false
-
     ## If defined, storageClassName: <storageClass>
     ## If set to "-", storageClassName: "", which disables dynamic provisioning
     ## If undefined (the default) or set to null, no storageClassName spec is
@@ -141,12 +126,10 @@ fluentd:
     # annotations: {}
     accessMode: ReadWriteOnce
     size: 10Gi
-
   buffer:
     ## Option to specify the Fluentd buffer as file/memory.
     ## If fluentd.persistence.enabled is true, this will be ignored.
     type: "memory"
-
     ## How frequently to push logs to SumoLogic
     ## ref: https://github.com/SumoLogic/fluentd-kubernetes-sumologic#options
     flushInterval: "5s"
@@ -155,7 +138,6 @@ fluentd:
     chunkLimitSize: "1m"
     queueChunkLimitSize: 128
     totalLimitSize: "128m"
-
     ## File paths to buffer to, if Fluentd buffer type is specified as file above.
     ## Each sumologic output plugin buffers to its own unique file.
     filePaths:
@@ -174,10 +156,8 @@ fluentd:
         node: /fluentd/buffer/metrics.node
         default: /fluentd/buffer/metrics.default
       events: /fluentd/buffer/events
-
     ## Additional config for buffer settings
-    extraConf: |-
-
+    extraConf: ""
   metadata:
     ## Option to control the enabling of metadata filter plugin cache_size.
     ## ref: https://github.com/fabric8io/fluent-plugin-kubernetes_metadata_filter#configuration
@@ -187,7 +167,6 @@ fluentd:
     cacheTtl: "3600"
     ## Option to control the interval at which metadata cache is asynchronously refreshed (in seconds).
     cacheRefresh: "1800"
-
   logs:
     ## Configuration for sumologic output plugin
     ## ref: https://github.com/SumoLogic/fluentd-output-sumologic
@@ -201,12 +180,10 @@ fluentd:
       ## Field name when add_timestamp is on.
       timestampKey: "timestamp"
       ## Additional config parameters for sumologic output plugin
-      extraConf: |-
-
+      extraConf: ""
     ## Additional config for custom log pipelines
     ## ref: TODO: documentation for custom logs pipelines
-    extraLogs: |-
-
+    extraLogs: ""
     ## Container log configuration
     containers:
       outputConf: |-
@@ -221,7 +198,6 @@ fluentd:
       sourceCategoryPrefix: "kubernetes/"
       ## Used to replace - with another character.
       sourceCategoryReplaceDash: "/"
-
       ## A regular expression for containers.
       ## Matching containers will be excluded from Sumo. The logs will still be sent to FluentD.
       excludeContainerRegex: ""
@@ -234,7 +210,6 @@ fluentd:
       ## A regular expression for pods.
       ## Matching pods will be excluded from Sumo. The logs will still be sent to FluentD.
       excludePodRegex: ""
-
       ## ref: https://github.com/fabric8io/fluent-plugin-kubernetes_metadata_filter#configuration
       k8sMetadataFilter:
         ## Option to control the enabling of metadata filter plugin watch.
@@ -249,10 +224,8 @@ fluentd:
         clientKey: ""
         ## Path to a file containing the bearer token to use for authentication
         bearerTokenFile: ""
-
       ## To use additional filter plugins
-      extraFilterPluginConf: |-
-
+      extraFilterPluginConf: ""
     ## Kubelet log configuration
     kubelet:
       outputConf: |-
@@ -265,7 +238,6 @@ fluentd:
       sourceCategoryPrefix: "kubernetes/"
       ## Used to replace - with another character.
       sourceCategoryReplaceDash: "/"
-
       ## A regular expression for facility.
       ## Matching facility will be excluded from Sumo. The logs will still be sent to FluentD.
       excludeFacilityRegex: ""
@@ -278,7 +250,6 @@ fluentd:
       ## A regular expression for unit.
       ## Matching unit will be excluded from Sumo. The logs will still be sent to FluentD.
       excludeUnitRegex: ""
-
     ## Systemd log configuration
     systemd:
       outputConf: |-
@@ -289,7 +260,6 @@ fluentd:
       sourceCategoryPrefix: "kubernetes/"
       ## Used to replace - with another character.
       sourceCategoryReplaceDash: "/"
-
       ## A regular expression for facility.
       ## Matching facility will be excluded from Sumo. The logs will still be sent to FluentD.
       excludeFacilityRegex: ""
@@ -302,25 +272,20 @@ fluentd:
       ## A regular expression for unit.
       ## Matching unit will be excluded from Sumo. The logs will still be sent to FluentD.
       excludeUnitRegex: ""
-
     ## Default log configuration (catch-all)
     default:
       outputConf: |-
         @include logs.output.conf
-
   metrics:
     ## Configuration for sumologic output plugin
     ## ref: https://github.com/SumoLogic/fluentd-output-sumologic
     ## ref: https://github.com/SumoLogic/sumologic-kubernetes-collection/blob/master/deploy/helm/sumologic/conf/metrics/metrics.output.conf
     outputConf: |-
       @include metrics.output.conf
-
     ## To use additional filter plugins
-    extraFilterPluginConf: |-
-
+    extraFilterPluginConf: ""
     ## To use additional output plugins
-    extraOutputPluginConf: |-
-
+    extraOutputPluginConf: ""
   events:
     # If enabled, collect K8s events
     enabled: true
@@ -332,7 +297,6 @@ fluentd:
     # watchResourceEventsOverrides:
     #   pods: "v1"
     #   events: "events.k8s.io/v1beta1"
-
 ## Configure metrics-server
 ## ref: https://github.com/helm/charts/blob/master/stable/metrics-server/values.yaml
 metrics-server:
@@ -340,20 +304,19 @@ metrics-server:
   ## This is required before enabling fluentd autoscaling unless you have an existing metrics-server in the cluster.
   enabled: false
   args:
-    - --kubelet-insecure-tls
-    - --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname
-
+  - --kubelet-insecure-tls
+  - --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname
 ## Configure fluent-bit
 ## ref: https://github.com/helm/charts/blob/master/stable/fluent-bit/values.yaml
 fluent-bit:
   ## Resource limits for fluent-bit
   resources: {}
-    # limits:
-    #   cpu: 100m
-    #   memory: 128Mi
-    # requests:
-    #   cpu: 10m
-    #   memory: 8Mi
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 10m
+  #   memory: 8Mi
 
   enabled: true
   service:
@@ -361,16 +324,15 @@ fluent-bit:
   metrics:
     enabled: true
   env:
-    - name: CHART
-      valueFrom:
-        configMapKeyRef:
-          name: sumologic-configmap
-          key: release
-    - name: NAMESPACE
-      valueFrom:
-        fieldRef:
-          fieldPath: metadata.namespace
-
+  - name: CHART
+    valueFrom:
+      configMapKeyRef:
+        name: sumologic-configmap
+        key: release
+  - name: NAMESPACE
+    valueFrom:
+      fieldRef:
+        fieldPath: metadata.namespace
   backend:
     type: forward
     forward:
@@ -381,24 +343,19 @@ fluent-bit:
       tls_verify: "on"
       tls_debug: 1
       shared_key:
-
   trackOffsets: true
-
   tolerations:
-    - effect: NoSchedule
-      operator: Exists
-
+  - effect: NoSchedule
+    operator: Exists
   input:
     systemd:
       enabled: true
-
   parsers:
     enabled: true
     # This regex matches the first line of a multiline log starting with a date of the format :  "2019-11-17 07:14:12" or "2019-11-17T07:14:12"
     regex:
-      - name: multi_line
-        regex: (?<log>^{"log":"\d{4}-\d{1,2}-\d{1,2}.\d{2}:\d{2}:\d{2}.*)
-
+    - name: multi_line
+      regex: (?<log>^{"log":"\d{4}-\d{1,2}-\d{1,2}.\d{2}:\d{2}:\d{2}.*)
   rawConfig: |-
     @INCLUDE fluent-bit-service.conf
 
@@ -469,7 +426,6 @@ fluent-bit:
       Read_From_Tail  true
 
     @INCLUDE fluent-bit-output.conf
-
 ## Configure prometheus-operator
 ## ref: https://github.com/helm/charts/blob/master/stable/prometheus-operator/values.yaml
 grafana:
@@ -495,51 +451,51 @@ prometheus-operator:
       enabled: false
   prometheus:
     additionalServiceMonitors:
-      - name: collection-sumologic
-        additionalLabels:
+    - name: collection-sumologic
+      additionalLabels:
+        app: collection-sumologic
+      endpoints:
+      - port: metrics
+      namespaceSelector:
+        matchNames:
+        - sumologic
+      selector:
+        matchLabels:
           app: collection-sumologic
-        endpoints:
-        - port: metrics
-        namespaceSelector:
-          matchNames:
-          - sumologic
-        selector:
-          matchLabels:
-            app: collection-sumologic
-      - name: collection-sumologic-events
-        additionalLabels:
+    - name: collection-sumologic-events
+      additionalLabels:
+        app: collection-sumologic-events
+      endpoints:
+      - port: metrics
+      namespaceSelector:
+        matchNames:
+        - sumologic
+      selector:
+        matchLabels:
           app: collection-sumologic-events
-        endpoints:
-          - port: metrics
-        namespaceSelector:
-          matchNames:
-            - sumologic
-        selector:
-          matchLabels:
-            app: collection-sumologic-events
-      - name: collection-fluent-bit
-        additionalLabels:
-          app: collection-fluent-bit
-        endpoints:
-          - port: metrics
-            path: /api/v1/metrics/prometheus
-        namespaceSelector:
-          matchNames:
-            - sumologic
-        selector:
-          matchLabels:
-            app: fluent-bit
-      - name: collection-sumologic-otelcol
-        additionalLabels:
+    - name: collection-fluent-bit
+      additionalLabels:
+        app: collection-fluent-bit
+      endpoints:
+      - port: metrics
+        path: /api/v1/metrics/prometheus
+      namespaceSelector:
+        matchNames:
+        - sumologic
+      selector:
+        matchLabels:
+          app: fluent-bit
+    - name: collection-sumologic-otelcol
+      additionalLabels:
+        app: collection-sumologic-otelcol
+      endpoints:
+      - port: metrics
+      namespaceSelector:
+        matchNames:
+        - sumologic
+      selector:
+        matchLabels:
           app: collection-sumologic-otelcol
-        endpoints:
-          - port: metrics
-        namespaceSelector:
-          matchNames:
-            - sumologic
-        selector:
-          matchLabels:
-            app: collection-sumologic-otelcol
     prometheusSpec:
       ## Define resources requests and limits for single Pods.
       resources: {}
@@ -560,75 +516,73 @@ prometheus-operator:
             configMapKeyRef:
               name: sumologic-configmap
               key: fluentdNamespace
-
       remoteWrite:
-        # kube state metrics
-        - url: http://$(CHART).$(NAMESPACE).svc.cluster.local:9888/prometheus.metrics.state
-          writeRelabelConfigs:
-            - action: keep
-              regex: kube-state-metrics;(?:kube_statefulset_status_observed_generation|kube_statefulset_status_replicas|kube_statefulset_replicas|kube_statefulset_metadata_generation|kube_daemonset_status_current_number_scheduled|kube_daemonset_status_desired_number_scheduled|kube_daemonset_status_number_misscheduled|kube_daemonset_status_number_unavailable|kube_deployment_spec_replicas|kube_deployment_status_replicas_available|kube_deployment_status_replicas_unavailable|kube_node_info|kube_node_status_allocatable|kube_node_status_capacity|kube_node_status_condition|kube_pod_container_info|kube_pod_container_resource_requests|kube_pod_container_resource_limits|kube_pod_container_status_ready|kube_pod_container_status_terminated_reason|kube_pod_container_status_waiting_reason|kube_pod_container_status_restarts_total|kube_pod_status_phase)
-              sourceLabels: [job, __name__]
-        # controller manager metrics
-        - url: http://$(CHART).$(NAMESPACE).svc.cluster.local:9888/prometheus.metrics.controller-manager
-          writeRelabelConfigs:
-            - action: keep
-              regex: kubelet;cloudprovider_.*_api_request_duration_seconds.*
-              sourceLabels: [job, __name__]
-        # scheduler metrics
-        - url: http://$(CHART).$(NAMESPACE).svc.cluster.local:9888/prometheus.metrics.scheduler
-          writeRelabelConfigs:
-            - action: keep
-              regex: kube-scheduler;scheduler_(?:e2e_scheduling|binding|scheduling_algorithm)_latency_microseconds.*
-              sourceLabels: [job, __name__]
-        # api server metrics
-        - url: http://$(CHART).$(NAMESPACE).svc.cluster.local:9888/prometheus.metrics.apiserver
-          writeRelabelConfigs:
-            - action: keep
-              regex: apiserver;(?:apiserver_request_(?:count|total)|apiserver_request_(?:latencies|duration_seconds).*|etcd_request_cache_get_(?:latencies_summary|duration_seconds).*|etcd_request_cache_add_(?:latencies_summary|duration_seconds).*|etcd_helper_cache_hit_(?:count|total)|etcd_helper_cache_miss_(?:count|total))
-              sourceLabels: [job, __name__]
-        # kubelet metrics
-        - url: http://$(CHART).$(NAMESPACE).svc.cluster.local:9888/prometheus.metrics.kubelet
-          writeRelabelConfigs:
-            - action: keep
-              regex: kubelet;(?:kubelet_docker_operations_errors.*|kubelet_docker_operations_(?:latency_micro|duration_)seconds.*|kubelet_running_container_count|kubelet_running_pod_count|kubelet_runtime_operations_(?:latency_micro|duration_)seconds.*)
-              sourceLabels: [job, __name__]
-        # cadvisor container metrics
-        - url: http://$(CHART).$(NAMESPACE).svc.cluster.local:9888/prometheus.metrics.container
-          writeRelabelConfigs:
-            - action: labelmap
-              regex: container_name
-              replacement: container
-            - action: drop
-              regex: POD
-              sourceLabels: [container]
-            - action: keep
-              regex: kubelet;.+;(?:container_cpu_usage_seconds_total|container_memory_working_set_bytes|container_fs_usage_bytes|container_fs_limit_bytes)
-              sourceLabels: [job,container,__name__]
-        # cadvisor aggregate container metrics
-        - url: http://$(CHART).$(NAMESPACE).svc.cluster.local:9888/prometheus.metrics.container
-          writeRelabelConfigs:
-            - action: keep
-              regex: kubelet;(?:container_network_receive_bytes_total|container_network_transmit_bytes_total)
-              sourceLabels: [job,__name__]
-        # node exporter metrics
-        - url: http://$(CHART).$(NAMESPACE).svc.cluster.local:9888/prometheus.metrics.node
-          writeRelabelConfigs:
-            - action: keep
-              regex: node-exporter;(?:node_load1|node_load5|node_load15|node_cpu_seconds_total)
-              sourceLabels: [job, __name__]
-        # prometheus operator rules
-        - url: http://$(CHART).$(NAMESPACE).svc.cluster.local:9888/prometheus.metrics.operator.rule
-          writeRelabelConfigs:
-            - action: keep
-              regex: 'cluster_quantile:apiserver_request_latencies:histogram_quantile|instance:node_filesystem_usage:sum|instance:node_network_receive_bytes:rate:sum|cluster_quantile:scheduler_e2e_scheduling_latency:histogram_quantile|cluster_quantile:scheduler_scheduling_algorithm_latency:histogram_quantile|cluster_quantile:scheduler_binding_latency:histogram_quantile|node_namespace_pod:kube_pod_info:|:kube_pod_info_node_count:|node:node_num_cpu:sum|:node_cpu_utilisation:avg1m|node:node_cpu_utilisation:avg1m|node:cluster_cpu_utilisation:ratio|:node_cpu_saturation_load1:|node:node_cpu_saturation_load1:|:node_memory_utilisation:|node:node_memory_bytes_total:sum|node:node_memory_utilisation:ratio|node:cluster_memory_utilisation:ratio|:node_memory_swap_io_bytes:sum_rate|node:node_memory_utilisation:|node:node_memory_utilisation_2:|node:node_memory_swap_io_bytes:sum_rate|:node_disk_utilisation:avg_irate|node:node_disk_utilisation:avg_irate|:node_disk_saturation:avg_irate|node:node_disk_saturation:avg_irate|node:node_filesystem_usage:|node:node_filesystem_avail:|:node_net_utilisation:sum_irate|node:node_net_utilisation:sum_irate|:node_net_saturation:sum_irate|node:node_net_saturation:sum_irate|node:node_inodes_total:|node:node_inodes_free:'
-              sourceLabels: [__name__]
-        # health
-        - url: http://$(CHART).$(NAMESPACE).svc.cluster.local:9888/prometheus.metrics
-          writeRelabelConfigs:
-            - action: keep
-              regex: (?:up|prometheus_remote_storage_.*|fluentd_.*|fluentbit.*|otelcol.*)
-              sourceLabels: [__name__]
-
+      - # kube state metrics
+        url: http://$(CHART).$(NAMESPACE).svc.cluster.local:9888/prometheus.metrics.state
+        writeRelabelConfigs:
+        - action: keep
+          regex: kube-state-metrics;(?:kube_statefulset_status_observed_generation|kube_statefulset_status_replicas|kube_statefulset_replicas|kube_statefulset_metadata_generation|kube_daemonset_status_current_number_scheduled|kube_daemonset_status_desired_number_scheduled|kube_daemonset_status_number_misscheduled|kube_daemonset_status_number_unavailable|kube_deployment_spec_replicas|kube_deployment_status_replicas_available|kube_deployment_status_replicas_unavailable|kube_node_info|kube_node_status_allocatable|kube_node_status_capacity|kube_node_status_condition|kube_pod_container_info|kube_pod_container_resource_requests|kube_pod_container_resource_limits|kube_pod_container_status_ready|kube_pod_container_status_terminated_reason|kube_pod_container_status_waiting_reason|kube_pod_container_status_restarts_total|kube_pod_status_phase)
+          sourceLabels: [job, __name__]
+      - # controller manager metrics
+        url: http://$(CHART).$(NAMESPACE).svc.cluster.local:9888/prometheus.metrics.controller-manager
+        writeRelabelConfigs:
+        - action: keep
+          regex: kubelet;cloudprovider_.*_api_request_duration_seconds.*
+          sourceLabels: [job, __name__]
+      - # scheduler metrics
+        url: http://$(CHART).$(NAMESPACE).svc.cluster.local:9888/prometheus.metrics.scheduler
+        writeRelabelConfigs:
+        - action: keep
+          regex: kube-scheduler;scheduler_(?:e2e_scheduling|binding|scheduling_algorithm)_latency_microseconds.*
+          sourceLabels: [job, __name__]
+      - # api server metrics
+        url: http://$(CHART).$(NAMESPACE).svc.cluster.local:9888/prometheus.metrics.apiserver
+        writeRelabelConfigs:
+        - action: keep
+          regex: apiserver;(?:apiserver_request_(?:count|total)|apiserver_request_(?:latencies|duration_seconds).*|etcd_request_cache_get_(?:latencies_summary|duration_seconds).*|etcd_request_cache_add_(?:latencies_summary|duration_seconds).*|etcd_helper_cache_hit_(?:count|total)|etcd_helper_cache_miss_(?:count|total))
+          sourceLabels: [job, __name__]
+      - # kubelet metrics
+        url: http://$(CHART).$(NAMESPACE).svc.cluster.local:9888/prometheus.metrics.kubelet
+        writeRelabelConfigs:
+        - action: keep
+          regex: kubelet;(?:kubelet_docker_operations_errors.*|kubelet_docker_operations_(?:latency_micro|duration_)seconds.*|kubelet_running_container_count|kubelet_running_pod_count|kubelet_runtime_operations_(?:latency_micro|duration_)seconds.*)
+          sourceLabels: [job, __name__]
+      - # cadvisor container metrics
+        url: http://$(CHART).$(NAMESPACE).svc.cluster.local:9888/prometheus.metrics.container
+        writeRelabelConfigs:
+        - action: labelmap
+          regex: container_name
+          replacement: container
+        - action: drop
+          regex: POD
+          sourceLabels: [container]
+        - action: keep
+          regex: kubelet;.+;(?:container_cpu_usage_seconds_total|container_memory_working_set_bytes|container_fs_usage_bytes|container_fs_limit_bytes)
+          sourceLabels: [job, container, __name__]
+      - # cadvisor aggregate container metrics
+        url: http://$(CHART).$(NAMESPACE).svc.cluster.local:9888/prometheus.metrics.container
+        writeRelabelConfigs:
+        - action: keep
+          regex: kubelet;(?:container_network_receive_bytes_total|container_network_transmit_bytes_total)
+          sourceLabels: [job, __name__]
+      - # node exporter metrics
+        url: http://$(CHART).$(NAMESPACE).svc.cluster.local:9888/prometheus.metrics.node
+        writeRelabelConfigs:
+        - action: keep
+          regex: node-exporter;(?:node_load1|node_load5|node_load15|node_cpu_seconds_total)
+          sourceLabels: [job, __name__]
+      - # prometheus operator rules
+        url: http://$(CHART).$(NAMESPACE).svc.cluster.local:9888/prometheus.metrics.operator.rule
+        writeRelabelConfigs:
+        - action: keep
+          regex: 'cluster_quantile:apiserver_request_latencies:histogram_quantile|instance:node_filesystem_usage:sum|instance:node_network_receive_bytes:rate:sum|cluster_quantile:scheduler_e2e_scheduling_latency:histogram_quantile|cluster_quantile:scheduler_scheduling_algorithm_latency:histogram_quantile|cluster_quantile:scheduler_binding_latency:histogram_quantile|node_namespace_pod:kube_pod_info:|:kube_pod_info_node_count:|node:node_num_cpu:sum|:node_cpu_utilisation:avg1m|node:node_cpu_utilisation:avg1m|node:cluster_cpu_utilisation:ratio|:node_cpu_saturation_load1:|node:node_cpu_saturation_load1:|:node_memory_utilisation:|node:node_memory_bytes_total:sum|node:node_memory_utilisation:ratio|node:cluster_memory_utilisation:ratio|:node_memory_swap_io_bytes:sum_rate|node:node_memory_utilisation:|node:node_memory_utilisation_2:|node:node_memory_swap_io_bytes:sum_rate|:node_disk_utilisation:avg_irate|node:node_disk_utilisation:avg_irate|:node_disk_saturation:avg_irate|node:node_disk_saturation:avg_irate|node:node_filesystem_usage:|node:node_filesystem_avail:|:node_net_utilisation:sum_irate|node:node_net_utilisation:sum_irate|:node_net_saturation:sum_irate|node:node_net_saturation:sum_irate|node:node_inodes_total:|node:node_inodes_free:'
+          sourceLabels: [__name__]
+      - # health
+        url: http://$(CHART).$(NAMESPACE).svc.cluster.local:9888/prometheus.metrics
+        writeRelabelConfigs:
+        - action: keep
+          regex: (?:up|prometheus_remote_storage_.*|fluentd_.*|fluentbit.*|otelcol.*)
+          sourceLabels: [__name__]
 ## Configure falco
 ## ref: https://github.com/helm/charts/blob/master/stable/falco/values.yaml
 falco:
@@ -638,7 +592,6 @@ falco:
   #  enabled: true
   falco:
     jsonOutput: true
-
 ##Configure otelcol
 otelcol:
   deployment:
@@ -684,22 +637,22 @@ otelcol:
         # Extracted fields and assigned names
         extract:
           metadata:
-            # extract the following well-known metadata fields
-            - containerId
-            - containerName
-            - cluster
-            - daemonSetName
-            - deployment
-            - hostName
-            - namespace
-            - node
-            - owners
-            - podId
-            - podName
-            - replicaSetName
-            - serviceName
-            - startTime
-            - statefulSetName
+          # extract the following well-known metadata fields
+          - containerId
+          - containerName
+          - cluster
+          - daemonSetName
+          - deployment
+          - hostName
+          - namespace
+          - node
+          - owners
+          - podId
+          - podName
+          - replicaSetName
+          - serviceName
+          - startTime
+          - statefulSetName
           tags:
             containerId: container_id
             containerName: container
@@ -716,12 +669,11 @@ otelcol:
             startTime: start_time
             statefulSetName: statefulset
           annotations:
-            - tag_name: pod_annotation_%s
-              key: "*"
+          - tag_name: pod_annotation_%s
+            key: "*"
           labels:
-            - tag_name: pod_label_%s
-              key: "*"
-
+          - tag_name: pod_label_%s
+            key: "*"
       # The memory_limiter processor is used to prevent out of memory situations on the collector.
       memory_limiter:
         # check_interval is the time between measurements of memory usage for the
@@ -729,12 +681,10 @@ otelcol:
         # checks will be performed. Values below 1 second are not recommended since
         # it can result in unnecessary CPU consumption.
         check_interval: 5s
-
         # Maximum amount of memory, in MiB, targeted to be allocated by the process heap.
         # Note that typically the total memory usage of process will be about 50MiB higher
         # than this value.
         limit_mib: 1900
-
       # The queued_retry processor uses a bounded queue to relay batches from the receiver or previous
       # processor to the next processor.
       queued_retry:
@@ -744,7 +694,6 @@ otelcol:
         queue_size: 10000
         # Whether to retry on failure or give up and drop
         retry_on_failure: true
-
       # The batch processor accepts spans and places them into batches grouped by node and resource
       batch:
         # Number of spans after which a batch will be sent regardless of time
@@ -758,12 +707,12 @@ otelcol:
     exporters:
       zipkin:
         url: "exporters.zipkin.url_replace"
-      # Following generates verbose logs with span content, useful to verify what
-      # metadata is being tagged. To enable, uncomment and add "logging" to exporters below.
-      # There are two levels that could be used: `debug` and `info` with the former
-      # being much more verbose and including (sampled) spans content
-      # logging:
-      #   loglevel: debug
+        # Following generates verbose logs with span content, useful to verify what
+        # metadata is being tagged. To enable, uncomment and add "logging" to exporters below.
+        # There are two levels that could be used: `debug` and `info` with the former
+        # being much more verbose and including (sampled) spans content
+        # logging:
+        #   loglevel: debug
     service:
       extensions: [health_check]
       pipelines:
