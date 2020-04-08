@@ -3,11 +3,11 @@ kind: Service
 metadata:
   name: {{ template "sumologic.fullname" . }}-fluentd-headless
   labels:
-    app: {{ template "sumologic.labels.app" . }}
+    app: {{ printf "%s-fluentd-headless" (include "sumologic.labels.app" .) }}
     {{- include "sumologic.labels.common" . | nindent 4 }}
 spec:
   selector:
-    app: {{ template "sumologic.labels.app" . }}
+    app: {{ printf "%s-fluentd-headless" (include "sumologic.labels.app" .) }}
   clusterIP: None
   ports:
   - name: prom-write

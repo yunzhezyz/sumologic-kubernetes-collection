@@ -3,19 +3,19 @@ kind: StatefulSet
 metadata:
   name: {{ template "sumologic.fullname" . }}-fluentd
   labels:
-    app: {{ template "sumologic.labels.app" . }}
+    app: {{ printf "%s-fluentd" (include "sumologic.labels.app" .) }}
     {{- include "sumologic.labels.common" . | nindent 4 }}
 spec:
   selector:
     matchLabels:
-      app: {{ template "sumologic.labels.app" . }}
+      app: {{ printf "%s-fluentd" (include "sumologic.labels.app" .) }}
   serviceName: {{ template "sumologic.fullname" . }}-fluentd-headless
   podManagementPolicy: "Parallel"
   replicas: {{ .Values.fluentd.statefulset.replicaCount }}
   template:
     metadata:
       labels:
-        app: {{ template "sumologic.labels.app" . }}
+        app: {{ printf "%s-fluentd" (include "sumologic.labels.app" .) }}
         {{- include "sumologic.labels.common" . | nindent 8 }}
     spec:
       serviceAccountName: {{ template "sumologic.fullname" . }}
