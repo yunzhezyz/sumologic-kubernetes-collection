@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "sumologic.fullname" . }}-fluentd
+  name: {{ printf "%s-fluentd" (include "sumologic.fullname" .) }}
   labels:
-    app: {{ template "sumologic.labels.app" . }}
+    app: {{ printf "%s-fluentd" (include "sumologic.labels.app" .) }}
     {{- include "sumologic.labels.common" . | nindent 4 }}
 spec:
   selector:
-    app: {{ template "sumologic.labels.app" . }}
+    app: {{ printf "%s-fluentd" (include "sumologic.labels.app" .) }}
   ports:
   {{- if .Values.sumologic.traces.enabled }}
   - name: zipkin-write

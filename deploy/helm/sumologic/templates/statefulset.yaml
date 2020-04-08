@@ -1,24 +1,24 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ template "sumologic.fullname" . }}-fluentd
+  name: {{ printf "%s-fluentd" (include "sumologic.fullname" .) }}
   labels:
-    app: {{ template "sumologic.labels.app" . }}
+    app: {{ printf "%s-fluentd" (include "sumologic.labels.app" .) }}
     {{- include "sumologic.labels.common" . | nindent 4 }}
 spec:
   selector:
     matchLabels:
-      app: {{ template "sumologic.labels.app" . }}
-  serviceName: {{ template "sumologic.fullname" . }}-fluentd-headless
+      app: {{ printf "%s-fluentd" (include "sumologic.labels.app" .) }}
+  serviceName: {{ printf "%s-fluentd-headless" (include "sumologic.fullname" .) }}
   podManagementPolicy: "Parallel"
   replicas: {{ .Values.fluentd.statefulset.replicaCount }}
   template:
     metadata:
       labels:
-        app: {{ template "sumologic.labels.app" . }}
+        app: {{ printf "%s-fluentd" (include "sumologic.labels.app" .) }}
         {{- include "sumologic.labels.common" . | nindent 8 }}
     spec:
-      serviceAccountName: {{ template "sumologic.fullname" . }}
+      serviceAccountName: {{ printf "%s-fluentd" (include "sumologic.fullname" .) }}
 {{- if .Values.fluentd.statefulset.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.fluentd.statefulset.nodeSelector | indent 8 }}
@@ -40,7 +40,7 @@ spec:
               - key: app
                 operator: In
                 values:
-                - {{ template "sumologic.labels.app" . }}
+                - {{ printf "%s-fluentd" (include "sumologic.labels.app" .) }}
               - key: app
                 operator: In
                 values:
@@ -56,7 +56,7 @@ spec:
                 - key: app
                   operator: In
                   values:
-                  - {{ template "sumologic.labels.app" . }}
+                  - {{ printf "%s-fluentd" (include "sumologic.labels.app" .) }}
                 - key: app
                   operator: In
                   values:
@@ -71,7 +71,7 @@ spec:
           type: ""
       - name: config-volume
         configMap:
-          name: {{ template "sumologic.fullname" . }}
+          name: {{ printf "%s-fluentd" (include "sumologic.fullname" .) }}
       securityContext:
         fsGroup: {{ .Values.fluentd.securityContext.fsGroup }}
       containers:

@@ -2,7 +2,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ template "sumologic.fullname" . }}-setup
+  name: {{ printf "%s-setup" (include "sumologic.fullname" .) }}
   namespace: {{ .Release.Namespace }}
   annotations:
 {{ toYaml .Values.sumologic.setup.job.annotations | indent 4 }}
@@ -13,11 +13,11 @@ spec:
   template:
     spec:
       restartPolicy: OnFailure
-      serviceAccountName: {{ template "sumologic.fullname" . }}-setup
+      serviceAccountName: {{ printf "%s-setup" (include "sumologic.fullname" .) }}
       volumes:
       - name: setup
         configMap:
-          name: {{ template "sumologic.fullname" . }}-setup
+          name: {{ printf "%s-setup" (include "sumologic.fullname" .) }}
           defaultMode: 0777
       containers:
       - name: setup

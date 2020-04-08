@@ -2,7 +2,7 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name:  {{ template "sumologic.fullname" . }}-setup
+  name:  {{ printf "%s-setup" (include "sumologic.fullname" .) }}
   annotations:
 {{ toYaml .Values.sumologic.setup.clusterRoleBinding.annotations | indent 4 }}
   labels:
@@ -11,10 +11,10 @@ metadata:
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: {{ template "sumologic.fullname" . }}-setup
+  name: {{ printf "%s-setup" (include "sumologic.fullname" .) }}
 subjects:
   - kind: ServiceAccount
-    name: {{ template "sumologic.fullname" . }}-setup
+    name: {{ printf "%s-setup" (include "sumologic.fullname" .) }}
     namespace: {{ .Release.Namespace }}
 
 {{- end }}
